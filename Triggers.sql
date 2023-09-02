@@ -66,3 +66,35 @@ BEGIN
 END;
 //
 DELIMITER ;
+DELIMITER //
+
+
+CREATE TRIGGER replica_datos_personales
+BEFORE UPDATE ON DatosPersonales
+FOR EACH ROW
+BEGIN
+    INSERT INTO HistorialCamposCambiados
+    (id_personal, edad, nombre, apellido, telefono, direccion, altura, codigo_postal, localidad, provincia, nombre_actualizo, fecha_actualizado, hora_actualizado)
+    VALUES
+    (OLD.id_personal, OLD.edad, OLD.nombre, OLD.apellido, OLD.telefono, OLD.direccion, OLD.altura, OLD.codigo_postal, OLD.localidad, OLD.provincia, 'Trigger', CURDATE(), CURTIME());
+END;
+//
+
+DELIMITER ;
+
+DELIMITER //
+
+-- Trigger para la tabla Postulacion
+CREATE TRIGGER replica_postulacion
+BEFORE UPDATE ON Postulacion
+FOR EACH ROW
+BEGIN
+    INSERT INTO HistorialPostulacion
+    (id_postulacion, id_publicacion, id_candidato, fecha_postulacion, estado, hora_actualizado, fecha_actualizado)
+    VALUES
+    (OLD.id_postulacion, OLD.id_publicacion, OLD.id_candidato, OLD.fecha_postulacion, OLD.estado, CURTIME(), CURDATE());
+END;
+//
+
+DELIMITER ;
+
