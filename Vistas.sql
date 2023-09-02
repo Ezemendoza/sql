@@ -1,3 +1,4 @@
+
 -- Vista Permite ver los candidatos postulados, días que pasaron desde que se postulo, nombre de la empresa en la cual se postulo, numero de teléfono y link del cv del candidato
 CREATE 
     ALGORITHM = UNDEFINED 
@@ -130,3 +131,23 @@ VIEW `rrhh`.`vistasectoresempresa` AS
         
         select * from vistasectoresempresa;
         
+	-- Por empresa mostrar a la empresa y la cantidad de facturas con su respectivo montos y la cantidad de empleados a pagar
+CREATE VIEW vista_resumen_empresa AS
+SELECT
+    E.Id_empresa,
+    E.nombre AS Empresa,
+    COUNT(DISTINCT C.id_costo) AS CantidadFacturas,
+    SUM(C.monto) AS MontoCostos,
+    COUNT(DISTINCT DP.id_personal) AS CantidadEmpleados,
+    SUM(DP.sueldo) AS MontoSueldos
+FROM
+    Empresa E
+LEFT JOIN
+    COSTO C ON E.Id_empresa = C.id_empresa
+LEFT JOIN
+    DatosPersonales DP ON E.Id_empresa = DP.id_empresa
+GROUP BY
+    E.Id_empresa, E.nombre;
+
+
+select * from vista_resumen_empresa;
